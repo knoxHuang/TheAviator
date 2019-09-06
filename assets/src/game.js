@@ -35,18 +35,46 @@ module.exports = cc.Class({
         collisionDamage: 0.1,
 
         player: cc.Node,
-        enemyManager: cc.Node
+        enemyManager: cc.Node,
+
+        lbl_start: cc.Label,
+
+        hit: cc.Node,
     },
+
     onLoad () {
+        this.runing = false;
         window.game = this;
         this.reset();
+
+        cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
     },
+
+    onToggleGame (event) {
+        this.runing = !this.runing;
+        this.lbl_start.string = this.runing ? 'Stop' : 'Start'
+    },
+
+    onKeyDown (event) {
+        // 按键 1 开启游戏
+        if (event.keyCode === 49) {
+            this.onToggleGame();
+        }
+        else if (event.keyCode === 51) {
+            this.level++;
+            this.node.emit('level-upgrade');
+        }
+        else if (event.keyCode === 55) {
+            this.reset();
+        }
+    },
+
     reset () {
         this.angles = cc.v3();
         this.distance = 0;
         this.lastLevelDistance = 0;
 
-        this.level = 1;
+        this.level = 5;
     },
 
     createMeshNode (name, mesh, shadowCast) {
@@ -60,23 +88,26 @@ module.exports = cc.Class({
     },
 
     update (dt) {
+        if (!this.runing) {
+            return;
+        }
         this.angles.z += this.speed * dt;
         this.world.eulerAngles = this.angles;
 
         this.checkCollision();
-        
-        let distance = this.speed * dt * this.ratioSpeedDistance;
-        this.distance += distance;
-        this.lastLevelDistance += distance;
-        
-        if (this.lastLevelDistance > this.levelDistance) {
-            this.level ++;
-            this.lastLevelDistance = this.lastLevelDistance % this.levelDistance;
-            this.speed *= this.upgradeRatio;
-            this.levelDistance *= this.upgradeRatio;
-            this.node.emit('level-upgrade');
-        }
-    
+
+        // let distance = this.speed * dt * this.ratioSpeedDistance;
+        // this.distance += distance;
+        // this.lastLevelDistance += distance;
+        //
+        // if (this.lastLevelDistance > this.levelDistance) {
+        //     // this.level++;
+        //     this.lastLevelDistance = this.lastLevelDistance % this.levelDistance;
+        //     this.speed *= this.upgradeRatio;
+        //     this.levelDistance *= this.upgradeRatio;
+        //     this.node.emit('level-upgrade');
+        // }
+
         this.updateUI();
     },
 
@@ -104,6 +135,10 @@ module.exports = cc.Class({
                 if (distance < this.collisionDistance) {
                     this.energy -= this.collisionDamage;
                     this.node.emit('collide-enemy', {dif, enemy, distance});
+                    this.hit.active = true;
+                    setTimeout(() => {
+                        this.hit.active = false;
+                    },200);
                     break;
                 }
             }

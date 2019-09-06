@@ -35,11 +35,24 @@ cc.Class({
     },
 
     start () {
-        let canvas = cc.find('Canvas');
-        canvas.on(cc.Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
-        canvas.on(cc.Node.EventType.MOUSE_MOVE, this.onMoseMove, this);
+        // let canvas = cc.find('Canvas');
+        // canvas.on(cc.Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
+        // canvas.on(cc.Node.EventType.MOUSE_MOVE, this.onMoseMove, this);
 
         window.game.node.on('collide-enemy', this.onCollider, this);
+
+        cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
+    },
+
+    onJump (event) {
+        this.touchPos.y = 0.8;
+    },
+
+    onKeyDown (event) {
+        // 按键 5 跳
+        if (event.keyCode === 53) {
+            this.onJump();
+        }
     },
 
     onTouchMove (event) {
@@ -86,8 +99,13 @@ cc.Class({
         this.planeCollisionSpeedY += (0-this.planeCollisionSpeedY)*dt * 30;
         this.planeCollisionDisplacementY += (0-this.planeCollisionDisplacementY)*dt *10;
 
-        let camera = this.camera;
-        camera.fov = normalize(touchPos.x, -1,1, 40,80);
-        camera.node.y += (this.node.y - camera.node.y) * dt * this.cameraSensivity;
+        // let camera = this.camera;
+        // camera.fov = normalize(touchPos.x, -1,1, 40,80);
+        // camera.node.y += (this.node.y - camera.node.y) * dt * this.cameraSensivity;
+
+        this.touchPos.y -= 0.04;
+        if (this.touchPos.y < -1) {
+            this.touchPos.y = -1;
+        }
     },
 });

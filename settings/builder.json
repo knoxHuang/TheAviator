@@ -23,7 +23,6 @@
     "upsideDown": false
   },
   "packageName": "org.cocos2d.TheAviator",
-  "preloadDepends": true,
   "qqplay": {
     "REMOTE_SERVER_ROOT": "",
     "orientation": "portrait",
@@ -39,5 +38,12 @@
     "subContext": ""
   },
   "xxteaKey": "d639f924-40a0-43",
-  "zipCompressJs": true
+  "zipCompressJs": true,
+  "baidugame": {
+    "appid": "testappid",
+    "orientation": "portrait",
+    "REMOTE_SERVER_ROOT": "",
+    "subContext": ""
+  },
+  "appBundle": false
 }
