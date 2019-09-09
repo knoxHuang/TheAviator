@@ -37,7 +37,7 @@ module.exports = cc.Class({
         player: cc.Node,
         enemyManager: cc.Node,
 
-        lbl_start: cc.Label,
+        lbl_tips: cc.Label,
 
         hit: cc.Node,
     },
@@ -52,7 +52,7 @@ module.exports = cc.Class({
 
     onToggleGame (event) {
         this.runing = !this.runing;
-        this.lbl_start.string = this.runing ? 'Stop' : 'Start'
+        this.lbl_tips.node.active = !this.runing;
     },
 
     onKeyDown (event) {
